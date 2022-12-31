@@ -12,9 +12,9 @@ public sealed class MemberModule : ICarterModule
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         var groupBuilder = app.MapGroup("/Member")
-            .AddEndpointFilterFactory(ValidationFilter.ValidationFilterFactory);
+            .AddEndpointFilterFactory(ValidationEndpointFilterFactory.Create);
 
-        groupBuilder.MapPost("/", postMember);
+        groupBuilder.MapPost("/", postMember);//.AddEndpointFilter<ValidationEndpointFilter<MemberDTO>>();
 
         groupBuilder.MapGet("/", getAllMembers);
 

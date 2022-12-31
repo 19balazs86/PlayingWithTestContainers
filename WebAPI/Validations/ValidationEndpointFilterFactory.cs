@@ -9,11 +9,11 @@ public class ValidateAttribute : Attribute
 }
 
 // Based on Ben Foster blog post: https://benfoster.io/blog/minimal-api-validation-endpoint-filters
-public static class ValidationFilter
+public static class ValidationEndpointFilterFactory
 {
-    public static EndpointFilterDelegate ValidationFilterFactory(EndpointFilterFactoryContext context, EndpointFilterDelegate next)
+    public static EndpointFilterDelegate Create(EndpointFilterFactoryContext context, EndpointFilterDelegate next)
     {
-        var validationDescriptors = getValidators(context.MethodInfo).ToList();
+        var validationDescriptors = getValidatonDescriptors(context.MethodInfo).ToList();
 
         if (validationDescriptors.Count > 0)
             return invocationContext => validate(validationDescriptors, invocationContext, next);
@@ -42,7 +42,7 @@ public static class ValidationFilter
 
                     if (!validationResult.IsValid)
                     {
-                        return Results.UnprocessableEntity(validationResult.ToDictionary());
+                        return Results.ValidationProblem(validationResult.ToDictionary(), statusCode: Status400BadRequest);
                     }
                 }
             }
@@ -51,7 +51,7 @@ public static class ValidationFilter
         return await next.Invoke(invocationContext);
     }
 
-    private static IEnumerable<ValidationDescriptor> getValidators(MethodInfo methodInfo)
+    private static IEnumerable<ValidationDescriptor> getValidatonDescriptors(MethodInfo methodInfo)
     {
         ParameterInfo[] parameters = methodInfo.GetParameters();
 
