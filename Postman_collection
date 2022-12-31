@@ -1,0 +1,97 @@
+{
+	"info": {
+		"_postman_id": "40b9e547-0428-42c3-ab28-113f0baea286",
+		"name": "TestContainers",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8316451"
+	},
+	"item": [
+		{
+			"name": "Create Member",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Name\": \"Member Name\",\r\n    \"Email\": \"member@email.com\",\r\n    \"DateOfBirth\": \"1986-10-07\",\r\n    \"Membership\": \"Basic\",\r\n    \"PaymentTypes\": \"Card, Paypal\",\r\n    \"ContactDetails\": {\r\n        \"Phone\": \"Members's phone number\",\r\n        \"Address\": {\r\n            \"Country\": \"Country name\",\r\n            \"City\": \"City name\",\r\n            \"Street\": \"Street name\"\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/Member",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"Member"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Member",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:5000/Member/1",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"Member",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Member",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:5000/Member/1",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"Member",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Members",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:5000/Member",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"Member"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

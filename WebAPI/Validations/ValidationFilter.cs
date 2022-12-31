@@ -1,0 +1,70 @@
+﻿using FluentValidation;
+using System.Reflection;
+
+namespace WebAPI.Validations;
+
+[AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
+public class ValidateAttribute : Attribute
+{
+}
+
+// Based on Ben Foster blog post: https://benfoster.io/blog/minimal-api-validation-endpoint-filters
+public static class ValidationFilter
+{
+    public static EndpointFilterDelegate ValidationFilterFactory(EndpointFilterFactoryContext context, EndpointFilterDelegate next)
+    {
+        var validationDescriptors = getValidators(context.MethodInfo).ToList();
+
+        if (validationDescriptors.Count > 0)
+            return invocationContext => validate(validationDescriptors, invocationContext, next);
+
+        return invocationContext => next(invocationContext);
+    }
+
+    private static async ValueTask<object?> validate(
+        IEnumerable<ValidationDescriptor> validationDescriptors,
+        EndpointFilterInvocationContext invocationContext,
+        EndpointFilterDelegate next)
+    {
+        foreach (ValidationDescriptor descriptor in validationDescriptors)
+        {
+            object? argument = invocationContext.Arguments[descriptor.ArgumentIndex];
+
+            if (argument is not null)
+            {
+                Type validatorType = typeof(IValidator<>).MakeGenericType(descriptor.ArgumentType);
+
+                IValidator? validator = invocationContext.HttpContext.RequestServices.GetService(validatorType) as IValidator;
+
+                if (validator is not null)
+                {
+                    var validationResult = await validator.ValidateAsync(new ValidationContext<object>(argument));
+
+                    if (!validationResult.IsValid)
+                    {
+                        return Results.UnprocessableEntity(validationResult.ToDictionary());
+                    }
+                }
+            }
+        }
+
+        return await next.Invoke(invocationContext);
+    }
+
+    private static IEnumerable<ValidationDescriptor> getValidators(MethodInfo methodInfo)
+    {
+        ParameterInfo[] parameters = methodInfo.GetParameters();
+
+        for (int index = 0; index < parameters.Length; index++)
+        {
+            ParameterInfo parameter = parameters[index];
+
+            if (parameter.GetCustomAttribute<ValidateAttribute>() is not null)
+            {
+                yield return new ValidationDescriptor(index, parameter.ParameterType);
+            }
+        }
+    }
+
+    private readonly record struct ValidationDescriptor(int ArgumentIndex, Type ArgumentType);
+}
