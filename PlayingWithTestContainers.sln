@@ -9,9 +9,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI.IntegrationTests", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7CBDF9AA-2732-4459-AAB0-BEFCED760D2A}"
 	ProjectSection(SolutionItems) = preProject
-		docker-compose-postgres.yml = docker-compose-postgres.yml
 		Postman_collection = Postman_collection
 		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DockerFiles", "DockerFiles", "{F8C65FF2-0972-4E0F-83E6-A3ED1460D01B}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose-postgres.yml = docker-compose-postgres.yml
+		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
 Global
@@ -31,6 +36,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F8C65FF2-0972-4E0F-83E6-A3ED1460D01B} = {7CBDF9AA-2732-4459-AAB0-BEFCED760D2A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AA1775A7-E764-4306-AF73-158E76B80FAB}

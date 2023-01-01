@@ -1,0 +1,30 @@
+version: '3.4'
+
+services:
+  postgresDB:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgrespw
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  webapi:
+    depends_on: ["postgresDB"]
+    image: webapi
+    build:
+      context: .
+      dockerfile: WebAPI/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - CUSTOMCONNSTR_PostgreSQL=Host=postgresDB;Port=5432;Username=postgres;Password=postgrespw;Database=postgres;
+    ports:
+      - "5000:80"
+
+volumes:
+  db:
+    driver: local
