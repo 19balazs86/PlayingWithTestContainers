@@ -25,7 +25,10 @@ public sealed class ValidationEndpointFilter<TModel> : IEndpointFilter where TMo
 
                 if (!validationResult.IsValid)
                 {
-                    return Results.ValidationProblem(validationResult.ToDictionary(), statusCode: Status400BadRequest);
+                    // 400 vs 422 for Client Error Request
+                    // https://stackoverflow.com/questions/51990143/400-vs-422-for-client-error-request/52098667#52098667
+
+                    return Results.ValidationProblem(validationResult.ToDictionary(), statusCode: Status422UnprocessableEntity);
                 }
             }
         }

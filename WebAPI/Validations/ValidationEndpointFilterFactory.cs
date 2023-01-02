@@ -42,7 +42,7 @@ public static class ValidationEndpointFilterFactory
 
                     if (!validationResult.IsValid)
                     {
-                        return Results.ValidationProblem(validationResult.ToDictionary(), statusCode: Status400BadRequest);
+                        return Results.ValidationProblem(validationResult.ToDictionary(), statusCode: Status422UnprocessableEntity);
                     }
                 }
             }

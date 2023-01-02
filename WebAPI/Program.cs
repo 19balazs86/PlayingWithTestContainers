@@ -1,11 +1,8 @@
 using Carter;
 using FluentValidation;
 using Mapster;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Net.Mime;
 using System.Reflection;
-using System.Text.Json;
 using WebAPI.Data;
 using WebAPI.Migrations;
 
@@ -13,6 +10,8 @@ namespace WebAPI;
 
 public sealed class Program
 {
+    private const string _endpointNotFound = "The requested endpoint is not found.";
+
     public static void Main(string[] args)
     {
         // Mapster
@@ -49,23 +48,12 @@ public sealed class Program
 
             app.MapCarter();
 
-            app.MapFallback(pageNotFoundHandler);
+            app.MapFallback(endpointNotFoundHandler);
         }
 
         app.Run();
     }
 
-    private static async Task pageNotFoundHandler(HttpContext context)
-    {
-        context.Response.ContentType = MediaTypeNames.Application.Json;
-        context.Response.StatusCode  = Status404NotFound;
-
-        var problemDetails = new ProblemDetails
-        {
-            Title = "The requested endpoint is not found.",
-            Status = Status404NotFound,
-        };
-
-        await JsonSerializer.SerializeAsync(context.Response.Body, problemDetails);
-    }
+    private static IResult endpointNotFoundHandler()
+        => TypedResults.Problem(_endpointNotFound, statusCode: Status404NotFound);
 }
