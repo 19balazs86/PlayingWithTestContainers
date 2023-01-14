@@ -55,6 +55,27 @@
 			"response": []
 		},
 		{
+			"name": "Get Member by Email",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:5000/Member/Email/member@email.com",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"Member",
+						"Email",
+						"member@email.com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Delete Member",
 			"request": {
 				"method": "DELETE",
