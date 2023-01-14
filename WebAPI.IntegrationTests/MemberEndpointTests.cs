@@ -47,6 +47,24 @@ namespace WebAPI.IntegrationTests
         }
 
         [Fact]
+        public async Task Create_and_Get_MemberByEmail()
+        {
+            // Arrange
+            MemberDTO createMember = new MemberPersona();
+
+            // Act #1
+            string location = await assumeMemberCreated(createMember);
+
+            Assert.NotEmpty(location);
+
+            // Act #2
+            MemberDTO? createdMember = await _albaHost.GetAsJson<MemberDTO>($"/Member/Email/{createMember.Email}");
+
+            // Assert
+            Assert.NotNull(createdMember);
+        }
+
+        [Fact]
         public async Task Create_2_Memebers_and_GetAll()
         {
             // Arrange

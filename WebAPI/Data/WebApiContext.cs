@@ -7,10 +7,22 @@ namespace WebAPI.Data;
 
 public sealed class WebApiContext : DbContext
 {
+    private static readonly Func<WebApiContext, string, Task<Member?>> _getMemberByEmail =
+        EF.CompileAsyncQuery((WebApiContext context, string email) =>
+            context.Members.AsNoTracking().FirstOrDefault(m => m.Email == email));
+
     public DbSet<Member> Members { get; set; } = default!;
 
     public WebApiContext(DbContextOptions options) : base(options)
     {
+    }
+
+    public async Task<Member?> GetMemberByEmailAsync(string email)
+    {
+        // Compiled Queries
+        // https://www.milanjovanovic.tech/blog/unleash-ef-core-performance-with-compiled-queries
+
+        return await _getMemberByEmail(this, email);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -20,6 +20,8 @@ public sealed class MemberModule : ICarterModule
 
         groupBuilder.MapGet("/{id:int}", getMemberById);
 
+        groupBuilder.MapGet("/Email/{email}", getMemberByEmail);
+
         groupBuilder.MapDelete("/{id:int}", deleteMemberById);
     }
 
@@ -53,6 +55,16 @@ public sealed class MemberModule : ICarterModule
         return memberDTO is null ?
             TypedResults.Problem("Member was not found.", statusCode: Status404NotFound) :
             TypedResults.Ok(memberDTO);
+    }
+
+    private static async Task<IResult> getMemberByEmail(string email, WebApiContext dbContext)
+    {
+        Member? member = await dbContext.GetMemberByEmailAsync(email);
+
+        if (member is null)
+            return TypedResults.Problem("Member was not found.", statusCode: Status404NotFound);
+
+        return TypedResults.Ok(member.Adapt<MemberDTO>());
     }
 
     private static async Task<IEnumerable<MemberDTO>> getAllMembers(WebApiContext dbContext)

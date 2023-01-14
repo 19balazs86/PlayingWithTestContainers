@@ -2,6 +2,7 @@
 using WebAPI.DTOs;
 
 namespace WebAPI.IntegrationTests.Personas;
+
 public record MemberPersona
 {
     public string Name { get; init; }           = "Member Persona";

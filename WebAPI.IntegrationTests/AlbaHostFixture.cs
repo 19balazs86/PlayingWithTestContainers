@@ -14,11 +14,11 @@ namespace WebAPI.IntegrationTests
     public sealed class AlbaHostFixture : IAsyncLifetime
     {
         private readonly TestcontainerDatabase _postgreSqlContainer = new TestcontainersBuilder<PostgreSqlTestcontainer>()
-            .WithDatabase(new PostgreSqlTestcontainerConfiguration
+            .WithDatabase(new PostgreSqlTestcontainerConfiguration(image: "postgres:latest")
             {
                 Database = "database",
                 Username = "postgres",
-                Password = "postgres",
+                Password = "postgres"
             })
             .Build();
 
