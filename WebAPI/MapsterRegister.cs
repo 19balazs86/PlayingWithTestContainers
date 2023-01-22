@@ -20,7 +20,15 @@ namespace WebAPI
                 .Map(dest => dest.DateOfJoined, src => src.CreatedAt.ToString(_universalDateFormat))
                 .Map(dest => dest.DateOfBirth,  src => src.DateOfBirth.ToString(_universalDateFormat))
                 .Map(dest => dest.Membership,   src => src.Membership.ToString())
-                .Map(dest => dest.PaymentTypes, src => Member.CalculatePaymentTypesText(src.PaymentTypes));
+                .Map(dest => dest.PaymentTypes, src => Member.CalculatePaymentTypesText(src.PaymentTypes))
+                .Map(dest => dest.Blogs,        src => src.Blogs.Adapt<IEnumerable<MemberBlogsDTO>>());
+
+            config.NewConfig<BlogDTO, Blog>()
+                .Ignore(dest => dest.Id)
+                .Map(dest => dest.OwnerId, src => MemberId.Create(src.OwnerId));
+
+            config.NewConfig<Blog, BlogDTO>()
+                .Map(dest => dest.OwnerName, src => src.Owner == null ? string.Empty : src.Owner.Name);
         }
     }
 }

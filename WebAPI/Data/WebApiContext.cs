@@ -13,6 +13,8 @@ public sealed class WebApiContext : DbContext
 
     public DbSet<Member> Members { get; set; } = default!;
 
+    public DbSet<Blog> Blogs { get; set; } = default!;
+
     public WebApiContext(DbContextOptions options) : base(options)
     {
     }
@@ -29,6 +31,7 @@ public sealed class WebApiContext : DbContext
     {
         //modelBuilder.ApplyConfigurationsFromAssembly(typeof(WebApiContext).Assembly);
         modelBuilder.ApplyConfiguration(new MemberConfiguration());
+        modelBuilder.ApplyConfiguration(new BlogConfiguration());
 
         setGlobalFilterToAllEntitiesForSoftDelete(modelBuilder);
     }

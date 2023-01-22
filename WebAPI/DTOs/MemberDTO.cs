@@ -17,6 +17,8 @@ public sealed class MemberDTO
     public string PaymentTypes { get; set; } = string.Empty;
 
     public ContactDetailsDTO? ContactDetails { get; set; }
+
+    public IEnumerable<MemberBlogsDTO> Blogs { get; set; } = Enumerable.Empty<MemberBlogsDTO>();
 }
 
 public sealed class ContactDetailsDTO
@@ -30,4 +32,10 @@ public sealed class AddressDTO
     public string? Country { get; set; }
     public string? City { get; set; }
     public string? Street { get; set; }
+}
+
+public sealed class MemberBlogsDTO
+{
+    public int Id { get; set; }
+    public string? Name { get; set; }
 }

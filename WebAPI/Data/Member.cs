@@ -2,6 +2,8 @@
 
 public readonly record struct MemberId(int Value)
 {
+    public static MemberId Create(int Value) => new MemberId(Value);
+
     public static implicit operator int(MemberId memberId) => memberId.Value;
 
     //public static explicit operator MemberId(int value) => new MemberId(value);
@@ -22,6 +24,8 @@ public sealed class Member : BaseEntityWithId<MemberId>
     public List<PaymentTypeEnum> PaymentTypes { get; set; } = PaymentTypeEnum.FromValue(PaymentTypeEnum.None).ToList();
 
     public ContactDetails? ContactDetails { get; set; }
+
+    public ICollection<Blog> Blogs { get; set; } = new List<Blog>();
 
     public static string CalculatePaymentTypesText(IEnumerable<PaymentTypeEnum> paymentTypes)
     {
