@@ -9,6 +9,7 @@ public class ValidateAttribute : Attribute
 }
 
 // Based on Ben Foster blog post: https://benfoster.io/blog/minimal-api-validation-endpoint-filters
+// Nuget package: https://www.nuget.org/packages/O9d.AspNet.FluentValidation
 public static class ValidationEndpointFilterFactory
 {
     public static EndpointFilterDelegate Create(EndpointFilterFactoryContext context, EndpointFilterDelegate next)
