@@ -13,4 +13,7 @@ In this repository you can find an example using minimal API with a few librarie
 - [Reset your database during testing with Respawn](https://youtu.be/E4TeWBFzcCw) 📽️13min-NickChapsas
 ---
 - [Integration test using SqlServer image with TestContainers](https://hamidmosalla.com/2022/09/10/integration-test-in-asp-net-core-6-using-sqlserver-image-and-testcontainers) 📓HamidMosalla
-- [Minimal API validation with Endpoint Filters](https://benfoster.io/blog/minimal-api-validation-endpoint-filters) 📓BenFoster | [FluentValidation](https://docs.fluentvalidation.net/)
+- [Minimal API validation with Endpoint Filters](https://benfoster.io/blog/minimal-api-validation-endpoint-filters) 📓BenFoster | [FluentValidation](https://docs.fluentvalidation.net)
+---
+
+- [FluentDocker](https://github.com/mariotoffia/FluentDocker) 👤*Mario Toffia* - Other library that enables docker and docker-compose interactions
