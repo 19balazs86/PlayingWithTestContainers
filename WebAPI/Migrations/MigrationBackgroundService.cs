@@ -1,24 +1,23 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebAPI.Data;
 
-namespace WebAPI.Migrations
+namespace WebAPI.Migrations;
+
+public sealed class MigrationBackgroundService : BackgroundService
 {
-    public sealed class MigrationBackgroundService : BackgroundService
+    private readonly IServiceScopeFactory _serviceScopeFactory;
+
+    public MigrationBackgroundService(IServiceScopeFactory serviceScopeFactory)
     {
-        private readonly IServiceProvider _serviceProvider;
+        _serviceScopeFactory = serviceScopeFactory;
+    }
 
-        public MigrationBackgroundService(IServiceProvider serviceProvider)
-        {
-            _serviceProvider = serviceProvider;
-        }
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        using IServiceScope scope = _serviceScopeFactory.CreateScope();
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            using IServiceScope scope = _serviceProvider.CreateScope();
+        WebApiContext dbContext = scope.ServiceProvider.GetRequiredService<WebApiContext>();
 
-            WebApiContext dbContext = scope.ServiceProvider.GetRequiredService<WebApiContext>();
-
-            await dbContext.Database.MigrateAsync(stoppingToken);
-        }
+        await dbContext.Database.MigrateAsync(stoppingToken);
     }
 }
