@@ -1,25 +1,21 @@
 ﻿using Alba;
-using DotNet.Testcontainers.Builders;
-using DotNet.Testcontainers.Configurations;
-using DotNet.Testcontainers.Containers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 using Respawn;
 using Respawn.Graph;
 using System.Data.Common;
+using Testcontainers.PostgreSql;
 
 namespace WebAPI.IntegrationTests
 {
     public sealed class AlbaHostFixture : IAsyncLifetime
     {
-        private readonly TestcontainerDatabase _postgreSqlContainer = new TestcontainersBuilder<PostgreSqlTestcontainer>()
-            .WithDatabase(new PostgreSqlTestcontainerConfiguration(image: "postgres:latest")
-            {
-                Database = "database",
-                Username = "postgres",
-                Password = "postgres"
-            })
+        private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder()
+            .WithImage("postgres:latest")
+            .WithDatabase("database")
+            .WithUsername("postgres")
+            .WithPassword("postgres")
             .Build();
 
         private DbConnection _dbConnection = default!;
@@ -50,7 +46,7 @@ namespace WebAPI.IntegrationTests
         {
             var configurationOverridden = new Dictionary<string, string>
             {
-                ["ConnectionStrings:PostgreSQL"] = _postgreSqlContainer.ConnectionString
+                ["ConnectionStrings:PostgreSQL"] = _postgreSqlContainer.GetConnectionString()
             };
 
             configurationBuilder.AddInMemoryCollection(configurationOverridden!);
@@ -65,7 +61,7 @@ namespace WebAPI.IntegrationTests
 
         private async Task<Respawner> createRespawner()
         {
-            _dbConnection = new NpgsqlConnection(_postgreSqlContainer.ConnectionString);
+            _dbConnection = new NpgsqlConnection(_postgreSqlContainer.GetConnectionString());
 
             await _dbConnection.OpenAsync();
 
