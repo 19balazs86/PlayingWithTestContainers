@@ -9,7 +9,7 @@ public sealed class BlogConfiguration : IEntityTypeConfiguration<Blog>
     {
         // Id
         builder.Property(c => c.Id)
-            .HasConversion(courseId => courseId.Value, value => new BlogId(value))
+            .HasConversion(courseId => courseId.Value, value => BlogId.Create(value))
             .ValueGeneratedOnAdd();
 
         // Name
@@ -23,5 +23,12 @@ public sealed class BlogConfiguration : IEntityTypeConfiguration<Blog>
             .WithMany(s => s.Blogs)
             .HasForeignKey(c => c.OwnerId)
             .OnDelete(DeleteBehavior.Cascade); // Default: Cascade
+
+        // Tags
+        builder.Property(m => m.Tags)
+            .HasColumnType("jsonb");
+
+        // The EF Core 7.0 JSON isn't currently supported by the Npgsql provider.
+        //builder.OwnsMany(blog => blog.Tags, builder => builder.ToJson());
     }
 }

@@ -10,7 +10,7 @@ public sealed class MemberConfiguration : IEntityTypeConfiguration<Member>
     {
         // Id
         builder.Property(m => m.Id)
-            .HasConversion(memberId => memberId.Value, value => new MemberId(value))
+            .HasConversion(memberId => memberId.Value, value => MemberId.Create(value))
             .ValueGeneratedOnAdd();
 
         // Name
@@ -25,7 +25,7 @@ public sealed class MemberConfiguration : IEntityTypeConfiguration<Member>
             .IsRequired()
             .HasMaxLength(50);
 
-        // The EF Core 7.0 JSON support isn't currently supported by the Npgsql provider.
+        // The EF Core 7.0 JSON isn't currently supported by the Npgsql provider.
         // To map to JSON, see https://www.npgsql.org/efcore/mapping/json.html
         //builder.OwnsOne(
         //    member => member.ContactDetails, ownedNavigationBuilder =>

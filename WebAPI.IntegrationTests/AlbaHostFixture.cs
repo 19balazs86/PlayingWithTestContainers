@@ -7,79 +7,78 @@ using Respawn.Graph;
 using System.Data.Common;
 using Testcontainers.PostgreSql;
 
-namespace WebAPI.IntegrationTests
+namespace WebAPI.IntegrationTests;
+
+public sealed class AlbaHostFixture : IAsyncLifetime
 {
-    public sealed class AlbaHostFixture : IAsyncLifetime
+    private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder()
+        .WithImage("postgres:latest")
+        .WithDatabase("database")
+        .WithUsername("postgres")
+        .WithPassword("postgres")
+        .Build();
+
+    private DbConnection _dbConnection = default!;
+
+    private Respawner? _respawner;
+
+    private Lazy<Task<Respawner>> _lazyRespawner = default!;
+
+    public IAlbaHost AlbaWebHost { get; set; } = default!;
+
+    public async Task InitializeAsync()
     {
-        private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder()
-            .WithImage("postgres:latest")
-            .WithDatabase("database")
-            .WithUsername("postgres")
-            .WithPassword("postgres")
-            .Build();
+        await _postgreSqlContainer.StartAsync();
 
-        private DbConnection _dbConnection = default!;
+        AlbaWebHost = await AlbaHost.For<Program>(configureWebHostBuilder);
 
-        private Respawner? _respawner;
+        // DB migration is applied with a BackgroundService, therefore the Respawner needs to be crated later on.
+        // Otherwise no tables and ResetDatabase throws exception.
+        _lazyRespawner = new Lazy<Task<Respawner>>(createRespawner);
+    }
 
-        private Lazy<Task<Respawner>> _lazyRespawner = default!;
+    private void configureWebHostBuilder(IWebHostBuilder webHostBuilder)
+    {
+        webHostBuilder.ConfigureAppConfiguration(configureAppConfiguration);
+    }
 
-        public IAlbaHost AlbaWebHost { get; set; } = default!;
-
-        public async Task InitializeAsync()
+    private void configureAppConfiguration(IConfigurationBuilder configurationBuilder)
+    {
+        var configurationOverridden = new Dictionary<string, string>
         {
-            await _postgreSqlContainer.StartAsync();
+            ["ConnectionStrings:PostgreSQL"] = _postgreSqlContainer.GetConnectionString()
+        };
 
-            AlbaWebHost = await AlbaHost.For<Program>(configureWebHostBuilder);
+        configurationBuilder.AddInMemoryCollection(configurationOverridden!);
+    }
 
-            // DB migration is applied with a BackgroundService, therefore the Respawner needs to be crated later on.
-            // Otherwise no tables and ResetDatabase throws exception.
-            _lazyRespawner = new Lazy<Task<Respawner>>(createRespawner);
-        }
+    public async Task ResetDatabaseAsync()
+    {
+        _respawner ??= await _lazyRespawner.Value;
 
-        private void configureWebHostBuilder(IWebHostBuilder webHostBuilder)
+        await _respawner.ResetAsync(_dbConnection);
+    }
+
+    private async Task<Respawner> createRespawner()
+    {
+        _dbConnection = new NpgsqlConnection(_postgreSqlContainer.GetConnectionString());
+
+        await _dbConnection.OpenAsync();
+
+        return await Respawner.CreateAsync(_dbConnection, new RespawnerOptions
         {
-            webHostBuilder.ConfigureAppConfiguration(configureAppConfiguration);
-        }
+            DbAdapter        = DbAdapter.Postgres,
+            SchemasToInclude = new[] { "public" },
+            TablesToIgnore   = new Table[] { "__EFMigrationsHistory" }
+        });
+    }
 
-        private void configureAppConfiguration(IConfigurationBuilder configurationBuilder)
-        {
-            var configurationOverridden = new Dictionary<string, string>
-            {
-                ["ConnectionStrings:PostgreSQL"] = _postgreSqlContainer.GetConnectionString()
-            };
+    public async Task DisposeAsync()
+    {
+        await AlbaWebHost.DisposeAsync();
 
-            configurationBuilder.AddInMemoryCollection(configurationOverridden!);
-        }
+        await _dbConnection.DisposeAsync();
 
-        public async Task ResetDatabaseAsync()
-        {
-            _respawner ??= await _lazyRespawner.Value;
-
-            await _respawner.ResetAsync(_dbConnection);
-        }
-
-        private async Task<Respawner> createRespawner()
-        {
-            _dbConnection = new NpgsqlConnection(_postgreSqlContainer.GetConnectionString());
-
-            await _dbConnection.OpenAsync();
-
-            return await Respawner.CreateAsync(_dbConnection, new RespawnerOptions
-            {
-                DbAdapter        = DbAdapter.Postgres,
-                SchemasToInclude = new[] { "public" },
-                TablesToIgnore   = new Table[] { "__EFMigrationsHistory" }
-            });
-        }
-
-        public async Task DisposeAsync()
-        {
-            await AlbaWebHost.DisposeAsync();
-
-            await _dbConnection.DisposeAsync();
-
-            await _postgreSqlContainer.StopAsync();
-        }
+        await _postgreSqlContainer.StopAsync();
     }
 }

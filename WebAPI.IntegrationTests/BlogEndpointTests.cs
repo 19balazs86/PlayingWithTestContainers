@@ -4,7 +4,7 @@ using WebAPI.DTOs;
 namespace WebAPI.IntegrationTests;
 
 [Collection(nameof(SharedCollectionFixture))]
-public class BlogEndpointTests : EndpointTestBase
+public sealed class BlogEndpointTests : EndpointTestBase
 {
     public BlogEndpointTests(AlbaHostFixture fixture) : base(fixture)
     {
@@ -20,7 +20,7 @@ public class BlogEndpointTests : EndpointTestBase
         int memberId = int.Parse(location.TrimStart("/Member/".ToCharArray()));
 
         // Act
-        location = await assumeBlogCreated(new BlogPersona() { OwnerId = memberId });
+        location = await assumeBlogCreated(new BlogPersona { OwnerId = memberId });
 
         // Assert
         Assert.NotEmpty(location);
