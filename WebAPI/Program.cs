@@ -29,6 +29,7 @@ public sealed class Program
 
             services.AddValidatorsFromAssemblyContaining<Program>(ServiceLifetime.Singleton);
 
+            // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/handle-errrors?view=aspnetcore-7.0#problem-details
             services.AddProblemDetails();
 
             services.AddDbContext<WebApiContext>(options => options.UseNpgsql(configuration.GetConnectionString("PostgreSQL")));
@@ -45,6 +46,7 @@ public sealed class Program
             app.UseHttpsRedirection();
 
             app.UseExceptionHandler();
+            app.UseStatusCodePages();
 
             app.MapCarter();
 

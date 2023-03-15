@@ -53,7 +53,8 @@ public sealed class MemberModule : ICarterModule
             .FirstOrDefaultAsync();
 
         return memberDTO is null ?
-            TypedResults.Problem("Member was not found.", statusCode: Status404NotFound) :
+            TypedResults.NotFound() : // app.UseStatusCodePages() will generate the problem details response
+            //TypedResults.Problem("Member was not found.", statusCode: Status404NotFound) :
             TypedResults.Ok(memberDTO);
     }
 
@@ -82,7 +83,8 @@ public sealed class MemberModule : ICarterModule
             .ExecuteUpdateAsync(setProp => setProp.SetProperty(m => m.DeletedAt, DateTime.UtcNow));
 
         return rowsUpdated == 0 ?
-            TypedResults.Problem("Member was not found.", statusCode: Status404NotFound) :
+            TypedResults.NotFound() : // app.UseStatusCodePages() will generate the problem details response
+            //TypedResults.Problem("Member was not found.", statusCode: Status404NotFound) :
             TypedResults.Ok();
     }
 }

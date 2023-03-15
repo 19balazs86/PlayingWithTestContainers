@@ -53,7 +53,8 @@ public sealed class BlogModule : ICarterModule
             .FirstOrDefaultAsync();
 
         return blogDTO is null ?
-            TypedResults.Problem("Blog was not found.", statusCode: Status404NotFound) :
+            TypedResults.NotFound() : // app.UseStatusCodePages() will generate the problem details response
+            //TypedResults.Problem("Blog was not found.", statusCode: Status404NotFound) :
             TypedResults.Ok(blogDTO);
     }
 }
