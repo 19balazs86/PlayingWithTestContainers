@@ -22,7 +22,8 @@ public sealed class WebApiContext : DbContext
     public async Task<Member?> GetMemberByEmailAsync(string email)
     {
         // Compiled Queries
-        // https://www.milanjovanovic.tech/blog/unleash-ef-core-performance-with-compiled-queries
+        // Milan: https://www.milanjovanovic.tech/blog/unleash-ef-core-performance-with-compiled-queries
+        // Nick Chapsas - Making EF as fast as Dapper: https://youtu.be/OxqAUIYemMs
 
         return await _getMemberByEmail(this, email);
     }
