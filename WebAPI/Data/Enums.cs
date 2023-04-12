@@ -3,6 +3,9 @@ using System.Diagnostics;
 
 namespace WebAPI.Data;
 
+// There is another package called Intellenum, which uses source generation.
+// https://github.com/SteveDunn/Intellenum
+
 [DebuggerDisplay("Valu = {Value}, Name = {Name}, Discount = {DiscountPercent}")]
 public sealed class MembershipEnum : SmartEnum<MembershipEnum>
 {
