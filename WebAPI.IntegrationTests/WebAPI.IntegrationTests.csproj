@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Alba" Version="7.4.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
+    <PackageReference Include="Alba" Version="7.4.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.2" />
     <PackageReference Include="Respawn" Version="6.0.0" />
     <PackageReference Include="Testcontainers" Version="3.2.0" />
     <PackageReference Include="Testcontainers.PostgreSql" Version="3.2.0" />
