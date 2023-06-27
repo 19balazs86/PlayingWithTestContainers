@@ -1,5 +1,6 @@
 ﻿using Carter;
 using Mapster;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Data;
 using WebAPI.DTOs;
@@ -21,7 +22,8 @@ public sealed class BlogModule : ICarterModule
         groupBuilder.MapGet("/{id:int}", getBlogById);
     }
 
-    private static async Task<IResult> postBlog([Validate] BlogDTO createBlog, WebApiContext dbContext)
+    // Stop returning IResult in Minimal APIs | Codewrinkles https://youtu.be/hubDMfLJbi8
+    private static async Task<Results<Created<Blog>, ProblemHttpResult>> postBlog([Validate] BlogDTO createBlog, WebApiContext dbContext)
     {
         if (!dbContext.Members.Any(m => m.Id == createBlog.OwnerId))
             TypedResults.Problem("Owner was not found.", statusCode: Status404NotFound);
@@ -32,7 +34,7 @@ public sealed class BlogModule : ICarterModule
 
         await dbContext.SaveChangesAsync();
 
-        return TypedResults.Created($"/Blog/{blog.Id}");
+        return TypedResults.Created($"/Blog/{blog.Id}", blog);
     }
 
     private static async Task<IEnumerable<BlogDTO>> getAllBlogs(WebApiContext dbContext)
@@ -44,7 +46,7 @@ public sealed class BlogModule : ICarterModule
             .ToListAsync();
     }
 
-    private static async Task<IResult> getBlogById(int id, WebApiContext dbContext)
+    private static async Task<Results<Ok<BlogDTO>, NotFound>> getBlogById(int id, WebApiContext dbContext)
     {
         BlogDTO? blogDTO = await dbContext.Blogs
             .AsNoTracking()

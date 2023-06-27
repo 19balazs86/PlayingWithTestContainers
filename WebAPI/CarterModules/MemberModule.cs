@@ -1,5 +1,6 @@
 ﻿using Carter;
 using Mapster;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Data;
 using WebAPI.DTOs;
@@ -25,7 +26,8 @@ public sealed class MemberModule : ICarterModule
         groupBuilder.MapDelete("/{id:int}", deleteMemberById);
     }
 
-    private static async Task<IResult> postMember([Validate] MemberDTO createMember, WebApiContext dbContext)
+    // Stop returning IResult in Minimal APIs | Codewrinkles https://youtu.be/hubDMfLJbi8
+    private static async Task<Created<Member>> postMember([Validate] MemberDTO createMember, WebApiContext dbContext)
     {
         // Carter has a built-in feature for validation. You can inject "HttpContext httpContext" in the method and call it in the wollowing way.
         // I created a FilterFactory in the ValidationFilter.cs. It can be activated with the "[Validate]" attribute.
@@ -41,10 +43,10 @@ public sealed class MemberModule : ICarterModule
 
         await dbContext.SaveChangesAsync();
 
-        return TypedResults.Created($"/Member/{member.Id}");
+        return TypedResults.Created($"/Member/{member.Id}", member);
     }
 
-    private static async Task<IResult> getMemberById(int id, WebApiContext dbContext)
+    private static async Task<Results<Ok<MemberDTO>, NotFound>> getMemberById(int id, WebApiContext dbContext)
     {
         MemberDTO? memberDTO = await dbContext.Members
             .AsNoTracking()
@@ -58,7 +60,7 @@ public sealed class MemberModule : ICarterModule
             TypedResults.Ok(memberDTO);
     }
 
-    private static async Task<IResult> getMemberByEmail(string email, WebApiContext dbContext)
+    private static async Task<Results<Ok<MemberDTO>, ProblemHttpResult>> getMemberByEmail(string email, WebApiContext dbContext)
     {
         Member? member = await dbContext.GetMemberByEmailAsync(email);
 
@@ -76,7 +78,7 @@ public sealed class MemberModule : ICarterModule
             .ToListAsync();
     }
 
-    private static async Task<IResult> deleteMemberById(int id, WebApiContext dbContext)
+    private static async Task<Results<Ok, NotFound>> deleteMemberById(int id, WebApiContext dbContext)
     {
         int rowsUpdated = await dbContext.Members
             .Where(m => m.Id == id)
