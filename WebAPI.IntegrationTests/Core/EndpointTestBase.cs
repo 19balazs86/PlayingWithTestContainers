@@ -1,7 +1,7 @@
 ﻿using Alba;
 using WebAPI.DTOs;
 
-namespace WebAPI.IntegrationTests;
+namespace WebAPI.IntegrationTests.Core;
 
 public abstract class EndpointTestBase : IAsyncLifetime
 {
@@ -11,7 +11,7 @@ public abstract class EndpointTestBase : IAsyncLifetime
 
     public EndpointTestBase(AlbaHostFixture fixture)
     {
-        _fixture  = fixture;
+        _fixture = fixture;
         _albaHost = fixture.AlbaWebHost;
     }
 

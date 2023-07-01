@@ -7,7 +7,7 @@ using Respawn.Graph;
 using System.Data.Common;
 using Testcontainers.PostgreSql;
 
-namespace WebAPI.IntegrationTests;
+namespace WebAPI.IntegrationTests.Core;
 
 public sealed class AlbaHostFixture : IAsyncLifetime
 {
@@ -67,9 +67,9 @@ public sealed class AlbaHostFixture : IAsyncLifetime
 
         return await Respawner.CreateAsync(_dbConnection, new RespawnerOptions
         {
-            DbAdapter        = DbAdapter.Postgres,
+            DbAdapter = DbAdapter.Postgres,
             SchemasToInclude = new[] { "public" },
-            TablesToIgnore   = new Table[] { "__EFMigrationsHistory" }
+            TablesToIgnore = new Table[] { "__EFMigrationsHistory" }
         });
     }
 

@@ -1,4 +1,4 @@
-﻿namespace WebAPI.IntegrationTests
+﻿namespace WebAPI.IntegrationTests.Core
 {
     [CollectionDefinition(nameof(SharedCollectionFixture))]
     public class SharedCollectionFixture : ICollectionFixture<AlbaHostFixture>
