@@ -32,7 +32,9 @@ public sealed class Program
             // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/handle-errrors?view=aspnetcore-7.0#problem-details
             services.AddProblemDetails();
 
-            services.AddDbContext<WebApiContext>(options => options.UseNpgsql(configuration.GetConnectionString("PostgreSQL")));
+            // For better performance use AddDbContextPool instead of AddDbContext
+            // Logging configuration can be set here using the options or in the WebApiContext
+            services.AddDbContextPool<WebApiContext>(options => options.UseNpgsql(configuration.GetConnectionString("PostgreSQL")));
 
             services.ConfigureHttpJsonOptions(options => options.SerializerOptions.PropertyNamingPolicy = null); // null makes is PascalCase. Default: JsonNamingPolicy.CamelCase;
 

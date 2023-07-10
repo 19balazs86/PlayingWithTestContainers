@@ -17,7 +17,19 @@ public sealed class WebApiContext : DbContext
 
     public WebApiContext(DbContextOptions options) : base(options)
     {
+
     }
+
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //{
+    //    // This configuration is unnecessary if the Default LogLevel is set to Information, which is suitable for Development
+    //    // It can also be configured in the program when you add the DbContext
+    //    // Note: 'OnConfiguring' cannot be used to modify DbContextOptions when DbContext pooling is enabled.
+    //    optionsBuilder
+    //        .LogTo(Console.WriteLine, LogLevel.Information)
+    //        .EnableSensitiveDataLogging()
+    //        .EnableDetailedErrors();
+    //}
 
     public async Task<Member?> GetMemberByEmailAsync(string email)
     {
