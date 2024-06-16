@@ -27,5 +27,10 @@ public sealed class BlogConfiguration : IEntityTypeConfiguration<Blog>
         // Tags
         // List<string> type will be 'text[]' in PostgreSQL
         // builder.Property(m => m.Tags).HasColumnType("jsonb"); // Deprecated
+
+        // IsDeleted
+        // Add an index for faster queries, filtering for deleted records. The expression is different between the DB providers. Feel free to ignore the HasFilter.
+        // builder.HasIndex(b => b.IsDeleted).HasFilter("is_deleted = 0");
+        // https://learn.microsoft.com/en-us/ef/core/modeling/indexes?tabs=fluent-api#index-filter
     }
 }
