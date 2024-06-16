@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System.Linq.Expressions;
 
@@ -47,19 +46,6 @@ public sealed class WebApiContext : DbContext
         modelBuilder.ApplyConfiguration(new BlogConfiguration());
 
         setGlobalFilterToAllEntitiesForSoftDelete(modelBuilder);
-    }
-
-    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken ct = default)
-    {
-        DateTime utcNow = DateTime.UtcNow;
-
-        ChangeTracker
-            .Entries<BaseEntity>()
-            .Where(entity => entity.State == EntityState.Added)
-            .ToList()
-            .ForEach(entity => entity.Entity.CreatedAt = utcNow);
-
-        return base.SaveChangesAsync(acceptAllChangesOnSuccess, ct);
     }
 
     private static void setGlobalFilterToAllEntitiesForSoftDelete(ModelBuilder modelBuilder)
