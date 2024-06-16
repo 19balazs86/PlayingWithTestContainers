@@ -13,7 +13,7 @@ using WebAPI.Data;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(WebApiContext))]
-    [Migration("20230309094209_Initial")]
+    [Migration("20240616124413_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -21,7 +21,7 @@ namespace WebAPI.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.3")
+                .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -50,7 +50,7 @@ namespace WebAPI.Migrations
 
                     b.Property<List<string>>("Tags")
                         .IsRequired()
-                        .HasColumnType("jsonb");
+                        .HasColumnType("text[]");
 
                     b.HasKey("Id");
 
@@ -66,9 +66,6 @@ namespace WebAPI.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<ContactDetails>("ContactDetails")
-                        .HasColumnType("jsonb");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -114,6 +111,53 @@ namespace WebAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("WebAPI.Data.Member", b =>
+                {
+                    b.OwnsOne("WebAPI.Data.ContactDetails", "ContactDetails", b1 =>
+                        {
+                            b1.Property<int>("MemberId")
+                                .HasColumnType("integer");
+
+                            b1.Property<string>("Phone")
+                                .HasColumnType("text");
+
+                            b1.HasKey("MemberId");
+
+                            b1.ToTable("Members");
+
+                            b1.ToJson("ContactDetails");
+
+                            b1.WithOwner()
+                                .HasForeignKey("MemberId");
+
+                            b1.OwnsOne("WebAPI.Data.Address", "Address", b2 =>
+                                {
+                                    b2.Property<int>("ContactDetailsMemberId")
+                                        .HasColumnType("integer");
+
+                                    b2.Property<string>("City")
+                                        .HasColumnType("text");
+
+                                    b2.Property<string>("Country")
+                                        .HasColumnType("text");
+
+                                    b2.Property<string>("Street")
+                                        .HasColumnType("text");
+
+                                    b2.HasKey("ContactDetailsMemberId");
+
+                                    b2.ToTable("Members");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("ContactDetailsMemberId");
+                                });
+
+                            b1.Navigation("Address");
+                        });
+
+                    b.Navigation("ContactDetails");
                 });
 
             modelBuilder.Entity("WebAPI.Data.Member", b =>

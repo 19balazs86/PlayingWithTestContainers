@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using WebAPI.Data;
 
 #nullable disable
 
@@ -25,9 +24,9 @@ namespace WebAPI.Migrations
                     DateOfBirth = table.Column<DateOnly>(type: "date", nullable: false),
                     Membership = table.Column<int>(type: "integer", nullable: false),
                     PaymentTypes = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    ContactDetails = table.Column<ContactDetails>(type: "jsonb", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ContactDetails = table.Column<string>(type: "jsonb", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -42,7 +41,7 @@ namespace WebAPI.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     OwnerId = table.Column<int>(type: "integer", nullable: false),
-                    Tags = table.Column<List<string>>(type: "jsonb", nullable: false),
+                    Tags = table.Column<List<string>>(type: "text[]", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },

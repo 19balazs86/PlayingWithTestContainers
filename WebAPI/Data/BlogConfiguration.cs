@@ -25,10 +25,7 @@ public sealed class BlogConfiguration : IEntityTypeConfiguration<Blog>
             .OnDelete(DeleteBehavior.Cascade); // Default: Cascade
 
         // Tags
-        builder.Property(m => m.Tags)
-            .HasColumnType("jsonb");
-
-        // The EF Core 7.0 JSON isn't currently supported by the Npgsql provider.
-        //builder.OwnsMany(blog => blog.Tags, builder => builder.ToJson());
+        // List<string> type will be 'text[]' in PostgreSQL
+        // builder.Property(m => m.Tags).HasColumnType("jsonb"); // Deprecated
     }
 }

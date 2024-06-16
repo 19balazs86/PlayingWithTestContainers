@@ -25,18 +25,15 @@ public sealed class MemberConfiguration : IEntityTypeConfiguration<Member>
             .IsRequired()
             .HasMaxLength(50);
 
-        // The EF Core 7.0 JSON isn't currently supported by the Npgsql provider.
-        // To map to JSON, see https://www.npgsql.org/efcore/mapping/json.html
-        //builder.OwnsOne(
-        //    member => member.ContactDetails, ownedNavigationBuilder =>
-        //    {
-        //        ownedNavigationBuilder.ToJson();
-        //        ownedNavigationBuilder.OwnsOne(contactDetails => contactDetails.Address);
-        //    });
-
         // ContactDetails
-        builder.Property(m => m.ContactDetails)
-            .HasColumnType("jsonb");
+        builder.OwnsOne(member =>
+            member.ContactDetails, ownedNavigationBuilder =>
+            {
+                ownedNavigationBuilder.ToJson();
+                ownedNavigationBuilder.OwnsOne(contactDetails => contactDetails.Address);
+            });
+
+        // builder.Property(m => m.ContactDetails).HasColumnType("jsonb"); // Deprecated
 
         // Membership
         builder.Property(m => m.Membership)
@@ -45,8 +42,8 @@ public sealed class MemberConfiguration : IEntityTypeConfiguration<Member>
         // PaymentTypes
         var valueComparer = new ValueComparer<List<PaymentTypeEnum>>(
             (pt, pt2) => pt!.SequenceEqual(pt2!),
-            pt => pt.Distinct().Aggregate(0, (hashCode, pt) => HashCode.Combine(hashCode, pt.Value)),
-            pt => pt);
+            pt        => pt.Distinct().Aggregate(0, (hashCode, pt) => HashCode.Combine(hashCode, pt.Value)),
+            pt        => pt);
 
         builder.Property(m => m.PaymentTypes)
             .HasConversion(
