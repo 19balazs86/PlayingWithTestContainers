@@ -2,8 +2,9 @@
 using System.Buffers.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using WebAPI.Data;
 
-namespace WebAPI.Data;
+namespace WebAPI.Infrastructure;
 
 // You can use this converter in the SystemText JsonSerializerOptions
 // Or add it globally: services.ConfigureHttpJsonOptions(options => options.SerializerOptions.Converters.Add(new BlogIdToIntJsonConverter()));

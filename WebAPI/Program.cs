@@ -4,7 +4,7 @@ using Mapster;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using WebAPI.Data;
-using WebAPI.Migrations;
+using WebAPI.Infrastructure;
 
 namespace WebAPI;
 

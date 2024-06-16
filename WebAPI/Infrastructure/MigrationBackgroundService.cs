@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebAPI.Data;
 
-namespace WebAPI.Migrations;
+namespace WebAPI.Infrastructure;
 
 public sealed class MigrationBackgroundService : BackgroundService
 {
