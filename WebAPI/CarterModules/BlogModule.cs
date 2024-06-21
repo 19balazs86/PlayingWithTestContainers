@@ -25,8 +25,12 @@ public sealed class BlogModule : ICarterModule
     // Stop returning IResult in Minimal APIs | Codewrinkles https://youtu.be/hubDMfLJbi8
     private static async Task<Results<Created<Blog>, ProblemHttpResult>> postBlog([Validate] BlogDTO createBlog, WebApiContext dbContext)
     {
-        if (!dbContext.Members.Any(m => m.Id == createBlog.OwnerId))
-            TypedResults.Problem("Owner was not found.", statusCode: Status404NotFound);
+        bool isOwnerExists = await dbContext.Members.AnyAsync(m => m.Id == createBlog.OwnerId);
+
+        if (!isOwnerExists)
+        {
+            return TypedResults.Problem("Owner was not found.", statusCode: Status404NotFound);
+        }
 
         Blog blog = createBlog.Adapt<Blog>();
 
@@ -40,7 +44,7 @@ public sealed class BlogModule : ICarterModule
     private static async Task<IEnumerable<BlogDTO>> getAllBlogs(WebApiContext dbContext)
     {
         return await dbContext.Blogs
-            .AsNoTracking()
+            //.AsNoTracking() // No need for AsNoTracking(), because globally QueryTrackingBehavior is NoTracking
             //.Include(b => b.Owner) // No need, because of the ProjectToType
             .ProjectToType<BlogDTO>()
             .ToListAsync();
@@ -49,7 +53,6 @@ public sealed class BlogModule : ICarterModule
     private static async Task<Results<Ok<BlogDTO>, NotFound>> getBlogById(int id, WebApiContext dbContext)
     {
         BlogDTO? blogDTO = await dbContext.Blogs
-            .AsNoTracking()
             .Where(b => b.Id == id)
             .ProjectToType<BlogDTO>()
             .FirstOrDefaultAsync();

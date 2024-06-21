@@ -20,6 +20,9 @@ public static class EntityFrameworkServiceCollectionExtensions
 
             options.UseNpgsql(connectionString);
 
+            // Set QueryTracking to AsNoTracking() by default, but you can configure it individually in IEntityTypeConfiguration
+            options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+
             options.AddInterceptors(serviceProvider.GetRequiredService<BaseEntityInterceptor>());
         });
 

@@ -49,7 +49,7 @@ public sealed class MemberModule : ICarterModule
     private static async Task<Results<Ok<MemberDTO>, NotFound>> getMemberById(int id, WebApiContext dbContext)
     {
         MemberDTO? memberDTO = await dbContext.Members
-            .AsNoTracking()
+            //.AsNoTracking() // No need for AsNoTracking(), because globally QueryTrackingBehavior is NoTracking
             .Where(m => m.Id == id)
             .ProjectToType<MemberDTO>()
             .FirstOrDefaultAsync();
@@ -73,7 +73,6 @@ public sealed class MemberModule : ICarterModule
     private static async Task<IEnumerable<MemberDTO>> getAllMembers(WebApiContext dbContext)
     {
         return await dbContext.Members
-            .AsNoTracking()
             .ProjectToType<MemberDTO>()
             .ToListAsync();
     }
