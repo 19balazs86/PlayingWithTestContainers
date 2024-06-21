@@ -45,27 +45,26 @@ public sealed class WebApiContext : DbContext
         modelBuilder.ApplyConfiguration(new MemberConfiguration());
         modelBuilder.ApplyConfiguration(new BlogConfiguration());
 
-        setGlobalFilterToAllEntitiesForSoftDelete(modelBuilder);
+        setGlobalQueryFilterForSoftDelete(modelBuilder);
     }
 
-    private static void setGlobalFilterToAllEntitiesForSoftDelete(ModelBuilder modelBuilder)
+    private static void setGlobalQueryFilterForSoftDelete(ModelBuilder modelBuilder)
     {
         foreach (IMutableEntityType entityType in modelBuilder.Model.GetEntityTypes())
         {
-            IMutableProperty? isDeletedProperty = entityType.FindProperty(nameof(BaseEntity.DeletedAt));
+            IMutableProperty? isDeletedProperty = entityType.FindProperty(nameof(BaseEntity.IsDeleted));
 
-            if (isDeletedProperty is not null)
-            {
-                var parameter = Expression.Parameter(entityType.ClrType, "p");
+            if (isDeletedProperty is null) continue;
 
-                var filter = Expression.Lambda(
-                    Expression.Equal(
-                        Expression.Property(parameter, isDeletedProperty.PropertyInfo!),
-                        Expression.Constant(null, typeof(DateTime?))
-                    ), parameter);
+            var parameter = Expression.Parameter(entityType.ClrType, "p");
 
-                entityType.SetQueryFilter(filter);
-            }
+            var filter = Expression.Lambda(
+                Expression.Equal(
+                    Expression.Property(parameter, isDeletedProperty.PropertyInfo!),
+                    Expression.Constant(false, typeof(bool))
+                ), parameter);
+
+            entityType.SetQueryFilter(filter);
         }
     }
 }

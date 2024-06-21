@@ -25,6 +25,13 @@ public sealed class MemberConfiguration : IEntityTypeConfiguration<Member>
             .IsRequired()
             .HasMaxLength(50);
 
+        // IsDeleted - Add an index for better query performance
+        builder.HasIndex(m => m.IsDeleted)
+            // Specify a filtered to index only not deleted values, reducing the index's size and disk space usage
+            // The expression is different between the DB providers. Feel free to ignore the HasFilter.
+            .HasFilter("\"IsDeleted\" = false");
+
+
         // ContactDetails
         builder.OwnsOne(member =>
             member.ContactDetails, ownedNavigationBuilder =>

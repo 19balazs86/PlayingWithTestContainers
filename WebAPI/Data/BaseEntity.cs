@@ -8,5 +8,6 @@ public abstract class BaseEntityWithId<TypeId> : BaseEntity where TypeId : struc
 public abstract class BaseEntity
 {
     public DateTime CreatedAt { get; set; }
-    public DateTime? DeletedAt { get; set; }
+
+    public bool IsDeleted { get; set; }
 }

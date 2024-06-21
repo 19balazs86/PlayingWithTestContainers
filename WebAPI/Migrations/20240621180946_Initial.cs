@@ -25,7 +25,7 @@ namespace WebAPI.Migrations
                     Membership = table.Column<int>(type: "integer", nullable: false),
                     PaymentTypes = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     ContactDetails = table.Column<string>(type: "jsonb", nullable: true)
                 },
                 constraints: table =>
@@ -43,7 +43,7 @@ namespace WebAPI.Migrations
                     OwnerId = table.Column<int>(type: "integer", nullable: false),
                     Tags = table.Column<List<string>>(type: "text[]", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -57,6 +57,12 @@ namespace WebAPI.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Blogs_IsDeleted",
+                table: "Blogs",
+                column: "IsDeleted",
+                filter: "\"IsDeleted\" = false");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Blogs_OwnerId",
                 table: "Blogs",
                 column: "OwnerId");
@@ -66,6 +72,12 @@ namespace WebAPI.Migrations
                 table: "Members",
                 column: "Email",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Members_IsDeleted",
+                table: "Members",
+                column: "IsDeleted",
+                filter: "\"IsDeleted\" = false");
         }
 
         /// <inheritdoc />

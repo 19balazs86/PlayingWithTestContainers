@@ -82,7 +82,7 @@ public sealed class MemberModule : ICarterModule
     {
         int rowsUpdated = await dbContext.Members
             .Where(m => m.Id == id)
-            .ExecuteUpdateAsync(setProp => setProp.SetProperty(m => m.DeletedAt, DateTime.UtcNow));
+            .ExecuteUpdateAsync(setProp => setProp.SetProperty(m => m.IsDeleted, true));
 
         return rowsUpdated == 0 ?
             TypedResults.NotFound() : // app.UseStatusCodePages() will generate the problem details response
