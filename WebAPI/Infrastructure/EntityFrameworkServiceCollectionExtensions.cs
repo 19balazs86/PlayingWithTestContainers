@@ -24,6 +24,12 @@ public static class EntityFrameworkServiceCollectionExtensions
             options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 
             options.AddInterceptors(serviceProvider.GetRequiredService<BaseEntityInterceptor>());
+
+            // --> Logging
+            // With sensitive logging, you can see the parameter values in the SQL query
+            //options.EnableSensitiveDataLogging();
+            // You can write the SQL query directly to the console, OR you can set the logging configuration to "Microsoft.EntityFrameworkCore": "Information"
+            //options.LogTo(Console.WriteLine, [DbLoggerCategory.Database.Command.Name], LogLevel.Information);
         });
 
         return services;
