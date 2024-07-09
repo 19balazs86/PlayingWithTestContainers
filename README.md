@@ -13,6 +13,7 @@ Alba helps to run the API in-memory, while the PostgreSQL server can run in Dock
 - [Alba](https://jasperfx.github.io/alba) 📓 - Utilizes the built-in `TestServer`
 - [The cleanest way to use Docker for testing](https://youtu.be/8IRNC7qZBmk) 📽️*13min-NickChapsas*
 - [Reset your database during testing with Respawn](https://youtu.be/E4TeWBFzcCw) 📽️*13min-NickChapsas*
+- [Testing RabbitMQ with Testcontainers](https://youtu.be/DMs3ZuakHGA) 📽️*12 min - Gui Ferreira*
 ---
 - [Integration test using SqlServer image with TestContainers](https://hamidmosalla.com/2022/09/10/integration-test-in-asp-net-core-6-using-sqlserver-image-and-testcontainers) 📓*HamidMosalla*
 - [Minimal API validation with Endpoint Filters](https://benfoster.io/blog/minimal-api-validation-endpoint-filters) 📓*BenFoster* | [FluentValidation](https://docs.fluentvalidation.net)

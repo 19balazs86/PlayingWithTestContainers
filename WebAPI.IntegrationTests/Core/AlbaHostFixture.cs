@@ -1,4 +1,5 @@
 ﻿using Alba;
+using DotNet.Testcontainers.Builders;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
@@ -12,6 +13,7 @@ namespace WebAPI.IntegrationTests.Core;
 public sealed class AlbaHostFixture : IAsyncLifetime
 {
     private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder()
+        .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(PostgreSqlBuilder.PostgreSqlPort)) // Currently, it is not necessary, but good practice to apply WaitStrategy
         .WithImage("postgres:latest")
         .WithDatabase("database")
         .WithUsername("postgres")
