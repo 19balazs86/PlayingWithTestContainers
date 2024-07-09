@@ -40,6 +40,11 @@ public sealed class MemberConfiguration : IEntityTypeConfiguration<Member>
                 ownedNavigationBuilder.OwnsOne(contactDetails => contactDetails.Address);
             });
 
+        // You can use the new EF8 Complex types feature, but JSON is more simple
+        // https://devblogs.microsoft.com/dotnet/announcing-ef8-rc1/
+        // https://learn.microsoft.com/hu-hu/ef/core/what-is-new/ef-core-8.0/whatsnew#value-objects-using-complex-types
+        // builder.ComplexProperty(m => m.ContactDetails, innerCompPropBuilder => innerCompPropBuilder.ComplexProperty(cd => cd.Address));
+
         // builder.Property(m => m.ContactDetails).HasColumnType("jsonb"); // Deprecated
 
         // Membership
