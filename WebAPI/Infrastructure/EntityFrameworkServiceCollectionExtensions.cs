@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using WebAPI.Data;
+using WebAPI.Infrastructure.Interceptors;
 
 namespace WebAPI.Infrastructure;
 
@@ -8,6 +10,7 @@ public static class EntityFrameworkServiceCollectionExtensions
     public static IServiceCollection AddDbContextWithInterceptors(this IServiceCollection services)
     {
         services.AddSingleton<BaseEntityInterceptor>();
+        services.AddSingleton<BaseEntityExecuteDeleteInterceptor>();
 
         // For better performance use AddDbContextPool instead of AddDbContext
         services.AddDbContextPool<WebApiContext>((serviceProvider, options) =>
@@ -23,7 +26,14 @@ public static class EntityFrameworkServiceCollectionExtensions
             // Set QueryTracking to AsNoTracking() by default, but you can configure it individually in IEntityTypeConfiguration
             options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 
-            options.AddInterceptors(serviceProvider.GetRequiredService<BaseEntityInterceptor>());
+            // --> Add: Interceptors
+            IInterceptor[] interceptors =
+            [
+                serviceProvider.GetRequiredService<BaseEntityInterceptor>(),
+                serviceProvider.GetRequiredService<BaseEntityExecuteDeleteInterceptor>()
+            ];
+
+            options.AddInterceptors(interceptors);
 
             // --> Logging
             // With sensitive logging, you can see the parameter values in the SQL query

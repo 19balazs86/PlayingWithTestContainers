@@ -79,9 +79,15 @@ public sealed class MemberModule : ICarterModule
 
     private static async Task<Results<Ok, NotFound>> deleteMemberById(int id, WebApiContext dbContext)
     {
+        // Without interceptor, you need to run update for soft delete
+        //int rowsUpdated = await dbContext.Members
+        //    .Where(m => m.Id == id)
+        //    .ExecuteUpdateAsync(setProp => setProp.SetProperty(m => m.IsDeleted, true));
+
+        // You can run the 'hard delete', because BaseEntityExecuteDeleteInterceptor can get this querry and apply the soft delete
         int rowsUpdated = await dbContext.Members
             .Where(m => m.Id == id)
-            .ExecuteUpdateAsync(setProp => setProp.SetProperty(m => m.IsDeleted, true));
+            .ExecuteDeleteAsync();
 
         return rowsUpdated == 0 ?
             TypedResults.NotFound() : // app.UseStatusCodePages() will generate the problem details response

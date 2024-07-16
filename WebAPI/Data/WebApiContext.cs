@@ -48,6 +48,8 @@ public sealed class WebApiContext : DbContext
         setGlobalQueryFilterForSoftDelete(modelBuilder);
     }
 
+    // Another solution is using a 'Convention'
+    // Example: https://github.com/rjperes/EFSoftDeletes/blob/master/Conventions/SoftDeleteConvention.cs
     private static void setGlobalQueryFilterForSoftDelete(ModelBuilder modelBuilder)
     {
         foreach (IMutableEntityType entityType in modelBuilder.Model.GetEntityTypes())

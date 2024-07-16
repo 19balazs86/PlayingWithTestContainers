@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using WebAPI.Data;
 
-namespace WebAPI.Infrastructure;
+namespace WebAPI.Infrastructure.Interceptors;
 
 // Milan's newsletter: https://www.milanjovanovic.tech/blog/how-to-use-ef-core-interceptors
 public sealed class BaseEntityInterceptor : SaveChangesInterceptor
