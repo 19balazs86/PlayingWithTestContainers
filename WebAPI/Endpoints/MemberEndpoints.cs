@@ -1,16 +1,15 @@
-﻿using Carter;
-using Mapster;
+﻿using Mapster;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Data;
 using WebAPI.DTOs;
 using WebAPI.Validations;
 
-namespace WebAPI.CarterModules;
+namespace WebAPI.Endpoints;
 
-public sealed class MemberModule : ICarterModule
+public static class MemberEndpoints
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
+    public static void MapMemberEndpoints(this IEndpointRouteBuilder app)
     {
         var groupBuilder = app.MapGroup("/Member")
             .AddEndpointFilterFactory(ValidationEndpointFilterFactory.Create);
@@ -56,7 +55,7 @@ public sealed class MemberModule : ICarterModule
 
         return memberDTO is null ?
             TypedResults.NotFound() : // app.UseStatusCodePages() will generate the problem details response
-            //TypedResults.Problem("Member was not found.", statusCode: Status404NotFound) :
+                                      //TypedResults.Problem("Member was not found.", statusCode: Status404NotFound) :
             TypedResults.Ok(memberDTO);
     }
 
@@ -91,7 +90,7 @@ public sealed class MemberModule : ICarterModule
 
         return rowsUpdated == 0 ?
             TypedResults.NotFound() : // app.UseStatusCodePages() will generate the problem details response
-            //TypedResults.Problem("Member was not found.", statusCode: Status404NotFound) :
+                                      //TypedResults.Problem("Member was not found.", statusCode: Status404NotFound) :
             TypedResults.Ok();
     }
 }

@@ -1,7 +1,7 @@
-using Carter;
 using FluentValidation;
 using Mapster;
 using System.Reflection;
+using WebAPI.Endpoints;
 using WebAPI.Infrastructure;
 
 namespace WebAPI;
@@ -22,9 +22,6 @@ public sealed class Program
 
         // Add services to the container
         {
-            // I do not use the build-in validation function. I created a FilterFactory in the ValidationFilter class.
-            services.AddCarter(configurator: configuration => configuration.WithEmptyValidators());
-
             services.AddValidatorsFromAssemblyContaining<Program>(ServiceLifetime.Singleton);
 
             // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/handle-errrors?view=aspnetcore-7.0#problem-details
@@ -46,7 +43,8 @@ public sealed class Program
             app.UseExceptionHandler();
             app.UseStatusCodePages();
 
-            app.MapCarter();
+            app.MapMemberEndpoints();
+            app.MapBlogEndpoints();
 
             app.MapFallback(endpointNotFoundHandler);
         }

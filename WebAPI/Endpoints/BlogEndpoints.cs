@@ -1,16 +1,15 @@
-﻿using Carter;
-using Mapster;
+﻿using Mapster;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Data;
 using WebAPI.DTOs;
 using WebAPI.Validations;
 
-namespace WebAPI.CarterModules;
+namespace WebAPI.Endpoints;
 
-public sealed class BlogModule : ICarterModule
+public static class BlogEndpoints
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
+    public static void MapBlogEndpoints(this IEndpointRouteBuilder app)
     {
         var groupBuilder = app.MapGroup("/Blog");
 
@@ -59,7 +58,7 @@ public sealed class BlogModule : ICarterModule
 
         return blogDTO is null ?
             TypedResults.NotFound() : // app.UseStatusCodePages() will generate the problem details response
-            //TypedResults.Problem("Blog was not found.", statusCode: Status404NotFound) :
+                                      //TypedResults.Problem("Blog was not found.", statusCode: Status404NotFound) :
             TypedResults.Ok(blogDTO);
     }
 }
