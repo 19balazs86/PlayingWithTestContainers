@@ -8,7 +8,7 @@ using WebAPI.Data;
 namespace WebAPI.Infrastructure.Interceptors;
 
 // The idea is coming from this package: https://github.com/rjperes/EFSoftDeletes/blob/master/Interceptors/SoftDeleteExecuteDeleteInterceptor.cs
-// This Interceptor can intercept the ExecuteDelete in MemberModule
+// This Interceptor can intercept the ExecuteDelete in MemberEndpoints.deleteMemberById
 public sealed class BaseEntityExecuteDeleteInterceptor : IQueryExpressionInterceptor
 {
     public Expression QueryCompilationStarting(Expression queryExpression, QueryExpressionEventData eventData)
@@ -22,34 +22,35 @@ public sealed class BaseEntityExecuteDeleteInterceptor : IQueryExpressionInterce
 
         private static readonly MethodInfo _executeDeleteMethod = typeof(RelationalQueryableExtensions).GetMethod(nameof(RelationalQueryableExtensions.ExecuteDelete), BindingFlags.Public | BindingFlags.Static)!;
         private static readonly MethodInfo _executeUpdateMethod = typeof(RelationalQueryableExtensions).GetMethod(nameof(RelationalQueryableExtensions.ExecuteUpdate), BindingFlags.Public | BindingFlags.Static)!;
-        private static readonly MethodInfo _propertyMethod = typeof(EF).GetMethod(nameof(EF.Property), BindingFlags.Static | BindingFlags.Public)!;
+        private static readonly MethodInfo _propertyMethod      = typeof(EF).GetMethod(nameof(EF.Property), BindingFlags.Static | BindingFlags.Public)!;
 
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
             if (node.Method.IsGenericMethod && node.Method.GetGenericMethodDefinition() == _executeDeleteMethod)
             {
                 Type entityType = node.Method.GetGenericArguments()[0];
+
                 bool isSoftDeletable = typeof(BaseEntity).IsAssignableFrom(entityType);
 
                 if (isSoftDeletable)
                 {
-                    var setPropertyMethod = typeof(SetPropertyCalls<>).MakeGenericType(entityType).GetMethods().Single(m =>
-                        m.Name == nameof(SetPropertyCalls<object>.SetProperty)
-                        && m.IsGenericMethod
-                        && m.GetGenericArguments().Length == 1
-                        && m.GetParameters().Length == 2
-                        && m.GetParameters()[1].ParameterType.IsGenericMethodParameter
-                        && m.GetParameters()[1].Name == "valueExpression"
+                    MethodInfo setPropertyMethod = typeof(SetPropertyCalls<>).MakeGenericType(entityType).GetMethods().Single(m =>
+                        m.Name == nameof(SetPropertyCalls<object>.SetProperty) &&
+                        m.IsGenericMethod &&
+                        m.GetGenericArguments().Length == 1 &&
+                        m.GetParameters().Length == 2 &&
+                        m.GetParameters()[1].ParameterType.IsGenericMethodParameter &&
+                        m.GetParameters()[1].Name == "valueExpression"
                     )
                     .MakeGenericMethod(typeof(bool));
-
-                    var setterParameter = Expression.Parameter(typeof(SetPropertyCalls<>).MakeGenericType(entityType), "setters");
 
                     var parameter = Expression.Parameter(entityType, "p");
 
                     var propertyCall = Expression.Call(null, _propertyMethod.MakeGenericMethod(typeof(bool)), parameter, Expression.Constant(_isDeletedProperty));
 
                     var propertyCallLambda = Expression.Lambda(propertyCall, parameter);
+
+                    var setterParameter = Expression.Parameter(typeof(SetPropertyCalls<>).MakeGenericType(entityType), "setters");
 
                     var setPropertyCall = Expression.Call(setterParameter, setPropertyMethod, propertyCallLambda, Expression.Constant(true));
 
