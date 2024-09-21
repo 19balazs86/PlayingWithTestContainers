@@ -7,7 +7,7 @@ public sealed class CreateBlogRequestValidator : AbstractValidator<BlogDTO>
 {
     public CreateBlogRequestValidator()
     {
-        RuleFor(x => x.Name)
+        RuleFor(x => x.Title)
             .NotEmpty()
             .MaximumLength(50);
 

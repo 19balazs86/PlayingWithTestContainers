@@ -12,8 +12,8 @@ public sealed class BlogConfiguration : IEntityTypeConfiguration<Blog>
             .HasConversion(courseId => courseId.Value, value => BlogId.Create(value))
             .ValueGeneratedOnAdd();
 
-        // Name
-        builder.Property(b => b.Name)
+        // Title
+        builder.Property(b => b.Title)
             .IsRequired()
             .HasMaxLength(50);
 

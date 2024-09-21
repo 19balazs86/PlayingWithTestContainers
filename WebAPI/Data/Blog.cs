@@ -13,7 +13,7 @@ public readonly record struct BlogId(int Value)
 
 public sealed class Blog : BaseEntityWithId<BlogId>
 {
-    public string Name { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
 
     public MemberId OwnerId { get; set; }
 
