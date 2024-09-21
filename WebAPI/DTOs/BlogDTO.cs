@@ -6,6 +6,8 @@ public sealed class BlogDTO
 
     public string Title { get; set; } = string.Empty;
 
+    public string Content { get; set; } = string.Empty;
+
     public int OwnerId { get; set; }
 
     public string OwnerName { get; set; } = string.Empty;

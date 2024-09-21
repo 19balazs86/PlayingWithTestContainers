@@ -15,9 +15,11 @@ public sealed class Blog : BaseEntityWithId<BlogId>
 {
     public string Title { get; set; } = string.Empty;
 
+    public string Content { get; set; } = string.Empty;
+
     public MemberId OwnerId { get; set; }
 
     public Member? Owner { get; set; } = default!;
 
-    public List<string> Tags { get; set; } = new List<string>();
+    public List<string> Tags { get; set; } = [];
 }

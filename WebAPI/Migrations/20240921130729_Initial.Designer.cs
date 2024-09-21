@@ -13,7 +13,7 @@ using WebAPI.Data;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(WebApiContext))]
-    [Migration("20240921125932_Initial")]
+    [Migration("20240921130729_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -33,6 +33,10 @@ namespace WebAPI.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");

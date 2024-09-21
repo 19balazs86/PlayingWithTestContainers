@@ -115,13 +115,41 @@
 			"response": []
 		},
 		{
-			"name": "Create Blog",
+			"name": "Create Blog #1",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"Title\": \"Test blog title\",\r\n    \"OwnerId\": 1,\r\n    \"Tags\": [\"Tag1\", \"Tag2\"]\r\n}",
+					"raw": "{\r\n    \"Title\": \"Relax in Comfort at Hotel Palace\",\r\n    \"OwnerId\": 1,\r\n    \"Tags\": [\"Tag1\", \"Tag2\"],\r\n    \"Content\": \"At Hotel Palace, we ensure your stay is nothing short of comfortable. Our rooms are thoughtfully designed to provide you with the perfect setting for relaxation. Whether you're here for business or leisure, you can take a peaceful stroll around the area or explore the local attractions. Make your stay an adventure, discovering the best of Rome while enjoying all the modern comforts we offer. Let Hotel Palace be your haven for your next unforgettable journey.\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/Blog",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"Blog"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Blog #2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Title\": \"Give Your Dog an Adventure with Daily Walks\",\r\n    \"OwnerId\": 1,\r\n    \"Tags\": [\"Tag1\", \"Tag3\"],\r\n    \"Content\": \"Daily walks are essential for your dog's well-being, giving them the chance to explore their surroundings. Dogs thrive on the excitement of new discoveries during their strolls, whether it's a short walk or a longer adventure. Each walk keeps your dog active, healthy, and engaged, making them more comfortable in their environment. Don't miss out on the bonding time that comes with this fun and relaxing activity. Make daily walks a key part of your dog's routine for a happy and fulfilled life.\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
