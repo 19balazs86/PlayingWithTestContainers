@@ -208,6 +208,27 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Get Blogs - Search",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:5000/Blog/full-text-search/adventure",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"Blog",
+						"full-text-search",
+						"adventure"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

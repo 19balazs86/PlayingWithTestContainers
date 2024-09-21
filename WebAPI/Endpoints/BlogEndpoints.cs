@@ -19,6 +19,8 @@ public static class BlogEndpoints
         groupBuilder.MapGet("/", getAllBlogs);
 
         groupBuilder.MapGet("/{id:int}", getBlogById);
+
+        groupBuilder.MapGet("/full-text-search/{keyword}", fullTextSearch);
     }
 
     // Stop returning IResult in Minimal APIs | Codewrinkles https://youtu.be/hubDMfLJbi8
@@ -60,5 +62,29 @@ public static class BlogEndpoints
             TypedResults.NotFound() : // app.UseStatusCodePages() will generate the problem details response
                                       //TypedResults.Problem("Blog was not found.", statusCode: Status404NotFound) :
             TypedResults.Ok(blogDTO);
+    }
+
+    private static async Task<IEnumerable<BlogDTO>> fullTextSearch(string keyword, WebApiContext dbContext)
+    {
+        /*
+         * - comfortable (more in Hotel blog)
+         * - adventure (more in Dog blog)
+         * - stroll (balanced)
+         * - explore (balanced)
+        */
+
+        return await dbContext.Blogs
+            .Where(b => EF.Functions.ToTsVector("english", b.Title + " " + b.Content)
+                                    .Matches(EF.Functions.PhraseToTsQuery("english", keyword)))
+            .Select(b => new BlogDTO
+            {
+                Id         = b.Id,
+                Title      = b.Title,
+                Content    = b.Content,
+                SearchRank = EF.Functions.ToTsVector("english", b.Title + " " + b.Content)
+                                         .Rank(EF.Functions.PhraseToTsQuery("english", keyword))
+            })
+            .OrderByDescending(b => b.SearchRank)
+            .ToListAsync();
     }
 }

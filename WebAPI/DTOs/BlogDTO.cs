@@ -12,5 +12,7 @@ public sealed class BlogDTO
 
     public string OwnerName { get; set; } = string.Empty;
 
-    public List<string> Tags { get; set; } = new List<string>();
+    public List<string> Tags { get; set; } = [];
+
+    public float? SearchRank { get; set; }
 }
