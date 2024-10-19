@@ -3,17 +3,11 @@ using WebAPI.DTOs;
 
 namespace WebAPI.IntegrationTests.Core;
 
-public abstract class EndpointTestBase : IAsyncLifetime
+public abstract class EndpointTestBase(AlbaHostFixture fixture) : IAsyncLifetime // Does not work with IAsyncDisposable
 {
-    protected readonly AlbaHostFixture _fixture;
+    protected readonly AlbaHostFixture _fixture = fixture;
 
-    protected readonly IAlbaHost _albaHost;
-
-    public EndpointTestBase(AlbaHostFixture fixture)
-    {
-        _fixture = fixture;
-        _albaHost = fixture.AlbaWebHost;
-    }
+    protected readonly IAlbaHost _albaHost = fixture.AlbaWebHost;
 
     protected async Task<string> assumeMemberCreated(MemberDTO createMember)
     {
@@ -24,6 +18,11 @@ public abstract class EndpointTestBase : IAsyncLifetime
         });
 
         return scenarioResult.Context.Response.Headers.Location.SingleOrDefault() ?? string.Empty;
+    }
+
+    protected int toMemberId(string location)
+    {
+        return int.Parse(location.TrimStart("/Member/".ToCharArray()));
     }
 
     public Task InitializeAsync() => Task.CompletedTask;

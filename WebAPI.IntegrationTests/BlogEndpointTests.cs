@@ -4,26 +4,37 @@ using WebAPI.DTOs;
 namespace WebAPI.IntegrationTests;
 
 [Collection(nameof(SharedCollectionFixture))]
-public sealed class BlogEndpointTests : EndpointTestBase
+public sealed class BlogEndpointTests(AlbaHostFixture fixture) : EndpointTestBase(fixture)
 {
-    public BlogEndpointTests(AlbaHostFixture fixture) : base(fixture)
-    {
-
-    }
-
     [Fact]
     public async Task CreateBlog()
     {
         // Arrange
         string location = await assumeMemberCreated(new MemberPersona());
 
-        int memberId = int.Parse(location.TrimStart("/Member/".ToCharArray()));
+        int memberId = toMemberId(location);
 
         // Act
         location = await assumeBlogCreated(new BlogPersona { OwnerId = memberId });
 
         // Assert
         Assert.NotEmpty(location);
+    }
+
+    [Fact]
+    public async Task FullTextSearch()
+    {
+        // Arrange
+        const string keyword = "blog";
+
+        await assumeMemberCreatedWithBlog();
+
+        // Act
+        BlogDTO[]? response = await _albaHost.GetAsJson<BlogDTO[]>($"/Blog/full-text-search/{keyword}");
+
+        // Assert
+        Assert.NotNull(response);
+        Assert.NotEmpty(response);
     }
 
     private async Task<string> assumeBlogCreated(BlogDTO createBlog)
@@ -35,5 +46,14 @@ public sealed class BlogEndpointTests : EndpointTestBase
         });
 
         return scenarioResult.Context.Response.Headers.Location.SingleOrDefault() ?? string.Empty;
+    }
+
+    private async Task assumeMemberCreatedWithBlog()
+    {
+        string location = await assumeMemberCreated(new MemberPersona());
+
+        int memberId = toMemberId(location);
+
+        await assumeBlogCreated(new BlogPersona { OwnerId = memberId });
     }
 }

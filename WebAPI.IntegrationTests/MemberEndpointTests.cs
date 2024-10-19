@@ -4,13 +4,8 @@ using WebAPI.DTOs;
 namespace WebAPI.IntegrationTests;
 
 [Collection(nameof(SharedCollectionFixture))]
-public sealed class MemberEndpointTests : EndpointTestBase
+public sealed class MemberEndpointTests(AlbaHostFixture fixture) : EndpointTestBase(fixture)
 {
-    public MemberEndpointTests(AlbaHostFixture fixture) : base(fixture)
-    {
-
-    }
-
     [Fact]
     public async Task CreateMember()
     {
