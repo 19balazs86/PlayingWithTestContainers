@@ -1,0 +1,34 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: Create a PostgreSQL RDS instance
+
+Resources:
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-rds-dbinstance.html
+  MyDBInstance:
+    Type: 'AWS::RDS::DBInstance'
+    Properties:
+      DBInstanceIdentifier: TestPostgresDB
+      DBName: postgres
+      AllocatedStorage: 20
+      StorageType: gp2
+      StorageEncrypted: false
+      DBInstanceClass: db.t4g.micro
+      Engine: postgres
+      EngineVersion: 16.4 # aws rds describe-db-engine-versions --default-only --engine postgres
+      MasterUsername: postgres
+      MasterUserPassword: postgrespw
+      VPCSecurityGroups: # Use and existing one
+        - sg-00abb1c88dd128ba5 # Navigate to this Security Groups > Edit inbound rules > select Type: PostgreSQL and Source: My IP
+      PubliclyAccessible: true
+      BackupRetentionPeriod: 0 # Automated backups disabled
+      DeletionProtection: false
+      AutoMinorVersionUpgrade: true # Optional, allows automatic minor version upgrades
+
+Outputs:
+  DBInstanceEndpoint:
+    Description: The connection endpoint for the database
+    Value: !GetAtt MyDBInstance.Endpoint.Address
+
+  DBInstancePort:
+    Description: The database port
+    Value: !GetAtt MyDBInstance.Endpoint.Port
