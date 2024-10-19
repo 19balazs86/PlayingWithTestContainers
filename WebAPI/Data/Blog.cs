@@ -1,4 +1,6 @@
-﻿namespace WebAPI.Data;
+﻿using NpgsqlTypes;
+
+namespace WebAPI.Data;
 
 public readonly record struct BlogId(int Value)
 {
@@ -22,4 +24,6 @@ public sealed class Blog : BaseEntityWithId<BlogId>
     public Member? Owner { get; set; } = default!;
 
     public List<string> Tags { get; set; } = [];
+
+    public NpgsqlTsVector FullTextSearchVector { get; set; } = default!;
 }

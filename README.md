@@ -3,6 +3,8 @@ In this repository you can find an example using minimal API with a few librarie
 
 Alba helps to run the API in-memory, while the PostgreSQL server can run in Docker using Testcontainers. After each test, the database is cleaned with the Respawn library, ensuring that each test runs in a clean state.
 
+Additionally, there is a full-text search feature implemented.
+
 #### Resources
 
 - [Testcontainers for .NET](https://dotnet.testcontainers.org/) 📓 - Lightweight implementation to support test environment with Docker containers
