@@ -25,16 +25,9 @@ public sealed class BlogConfiguration : IEntityTypeConfiguration<Blog>
             .OnDelete(DeleteBehavior.Cascade); // Default: Cascade
 
         //--> FullTextSearchVector
-        string computedColumnSql =
-            $"""
-            to_tsvector('english', "{nameof(Blog.Title)}" || ' ' || "{nameof(Blog.Content)}")
-            """;
-
-        builder.Property(b => b.FullTextSearchVector)
-             //.ValueGeneratedOnAddOrUpdate() // No need to add this, as it will be included in WebApiContextModelSnapshot by default
-               .HasComputedColumnSql(computedColumnSql, stored: true);
-
-        builder.HasIndex(b => b.FullTextSearchVector);
+        builder.HasGeneratedTsVectorColumn(b => b.FullTextSearchVector, "english", b => new { b.Title, b.Content })
+               .HasIndex(b => b.FullTextSearchVector)
+               .HasMethod("GIN");
 
         //--> Tags
         // List<string> type will be 'text[]' in PostgreSQL

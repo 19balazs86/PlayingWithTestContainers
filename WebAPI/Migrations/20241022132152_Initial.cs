@@ -44,7 +44,9 @@ namespace WebAPI.Migrations
                     Content = table.Column<string>(type: "text", nullable: false),
                     OwnerId = table.Column<int>(type: "integer", nullable: false),
                     Tags = table.Column<List<string>>(type: "text[]", nullable: false),
-                    FullTextSearchVector = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false, computedColumnSql: "to_tsvector('english', \"Title\" || ' ' || \"Content\")", stored: true),
+                    FullTextSearchVector = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false)
+                        .Annotation("Npgsql:TsVectorConfig", "english")
+                        .Annotation("Npgsql:TsVectorProperties", new[] { "Title", "Content" }),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
@@ -62,7 +64,8 @@ namespace WebAPI.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Blogs_FullTextSearchVector",
                 table: "Blogs",
-                column: "FullTextSearchVector");
+                column: "FullTextSearchVector")
+                .Annotation("Npgsql:IndexMethod", "GIN");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Blogs_IsDeleted",

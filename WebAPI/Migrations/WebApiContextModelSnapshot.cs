@@ -43,7 +43,8 @@ namespace WebAPI.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("tsvector")
-                        .HasComputedColumnSql("to_tsvector('english', \"Title\" || ' ' || \"Content\")", true);
+                        .HasAnnotation("Npgsql:TsVectorConfig", "english")
+                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "Title", "Content" });
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -63,6 +64,8 @@ namespace WebAPI.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FullTextSearchVector");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("FullTextSearchVector"), "GIN");
 
                     b.HasIndex("IsDeleted")
                         .HasFilter("\"IsDeleted\" = false");

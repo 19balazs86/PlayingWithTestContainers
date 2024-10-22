@@ -14,7 +14,7 @@ using WebAPI.Data;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(WebApiContext))]
-    [Migration("20241019140545_Initial")]
+    [Migration("20241022132152_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -46,7 +46,8 @@ namespace WebAPI.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("tsvector")
-                        .HasComputedColumnSql("to_tsvector('english', \"Title\" || ' ' || \"Content\")", true);
+                        .HasAnnotation("Npgsql:TsVectorConfig", "english")
+                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "Title", "Content" });
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -66,6 +67,8 @@ namespace WebAPI.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FullTextSearchVector");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("FullTextSearchVector"), "GIN");
 
                     b.HasIndex("IsDeleted")
                         .HasFilter("\"IsDeleted\" = false");
