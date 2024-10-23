@@ -72,6 +72,11 @@ namespace WebAPI.Migrations
 
                     b.HasIndex("OwnerId");
 
+                    b.HasIndex("Title", "Content")
+                        .HasAnnotation("Npgsql:TsVectorConfig", "english");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("Title", "Content"), "GIN");
+
                     b.ToTable("Blogs");
                 });
 

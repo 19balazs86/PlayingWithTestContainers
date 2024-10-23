@@ -79,6 +79,13 @@ namespace WebAPI.Migrations
                 column: "OwnerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Blogs_Title_Content",
+                table: "Blogs",
+                columns: new[] { "Title", "Content" })
+                .Annotation("Npgsql:IndexMethod", "GIN")
+                .Annotation("Npgsql:TsVectorConfig", "english");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Members_Email",
                 table: "Members",
                 column: "Email",

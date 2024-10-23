@@ -14,7 +14,7 @@ using WebAPI.Data;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(WebApiContext))]
-    [Migration("20241022132152_Initial")]
+    [Migration("20241023145122_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -74,6 +74,11 @@ namespace WebAPI.Migrations
                         .HasFilter("\"IsDeleted\" = false");
 
                     b.HasIndex("OwnerId");
+
+                    b.HasIndex("Title", "Content")
+                        .HasAnnotation("Npgsql:TsVectorConfig", "english");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("Title", "Content"), "GIN");
 
                     b.ToTable("Blogs");
                 });

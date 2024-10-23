@@ -29,6 +29,11 @@ public sealed class BlogConfiguration : IEntityTypeConfiguration<Blog>
                .HasIndex(b => b.FullTextSearchVector)
                .HasMethod("GIN");
 
+        //--> FullTextSearch index for the EF.Functions.ToTsVector in the BlogEndpoints.fullTextSearch_OnTheFly methood
+        builder.HasIndex(b => new { b.Title, b.Content })
+               .HasMethod("GIN")
+               .IsTsVectorExpressionIndex("english");
+
         //--> Tags
         // List<string> type will be 'text[]' in PostgreSQL
         // builder.Property(b => b.Tags).HasColumnType("jsonb"); // Deprecated
