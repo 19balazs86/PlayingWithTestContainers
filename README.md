@@ -15,7 +15,8 @@ Additionally, there is a full-text search feature implemented.
 - [The cleanest way to use Docker for testing](https://youtu.be/8IRNC7qZBmk) 📽️*13min-NickChapsas*
 - [Reset your database during testing with Respawn](https://youtu.be/E4TeWBFzcCw) 📽️*13min-NickChapsas*
 - [Testing RabbitMQ with Testcontainers](https://youtu.be/DMs3ZuakHGA) 📽️*12 min - Gui Ferreira*
-- [Full-text search with Postgres and EF](https://youtu.be/NPduWiPzhpE) 📽️*24 min - Milan*
+- [Full-Text Search](https://www.npgsql.org/efcore/mapping/full-text-search.html) 📓*Npgsql-Doc*
+  - [FTS with Postgres and EF](https://youtu.be/NPduWiPzhpE) 📽️*24 min - Milan*
 ---
 - [Integration test using SqlServer image with TestContainers](https://hamidmosalla.com/2022/09/10/integration-test-in-asp-net-core-6-using-sqlserver-image-and-testcontainers) 📓*HamidMosalla*
 - [Minimal API validation with Endpoint Filters](https://benfoster.io/blog/minimal-api-validation-endpoint-filters) 📓*BenFoster* | [FluentValidation](https://docs.fluentvalidation.net)
