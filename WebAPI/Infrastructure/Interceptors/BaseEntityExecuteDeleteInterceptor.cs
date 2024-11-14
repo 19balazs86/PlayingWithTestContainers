@@ -20,8 +20,8 @@ public sealed class BaseEntityExecuteDeleteInterceptor : IQueryExpressionInterce
     {
         private const string _isDeletedProperty = nameof(BaseEntity.IsDeleted);
 
-        private static readonly MethodInfo _executeDeleteMethod = typeof(RelationalQueryableExtensions).GetMethod(nameof(RelationalQueryableExtensions.ExecuteDelete), BindingFlags.Public | BindingFlags.Static)!;
-        private static readonly MethodInfo _executeUpdateMethod = typeof(RelationalQueryableExtensions).GetMethod(nameof(RelationalQueryableExtensions.ExecuteUpdate), BindingFlags.Public | BindingFlags.Static)!;
+        private static readonly MethodInfo _executeDeleteMethod = typeof(EntityFrameworkQueryableExtensions).GetMethod(nameof(EntityFrameworkQueryableExtensions.ExecuteDelete), BindingFlags.Public | BindingFlags.Static)!;
+        private static readonly MethodInfo _executeUpdateMethod = typeof(EntityFrameworkQueryableExtensions).GetMethod(nameof(EntityFrameworkQueryableExtensions.ExecuteUpdate), BindingFlags.Public | BindingFlags.Static)!;
         private static readonly MethodInfo _propertyMethod      = typeof(EF).GetMethod(nameof(EF.Property), BindingFlags.Static | BindingFlags.Public)!;
 
         protected override Expression VisitMethodCall(MethodCallExpression node)
