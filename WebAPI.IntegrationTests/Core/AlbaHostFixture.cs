@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 using Respawn;
-using Respawn.Graph;
 using System.Data.Common;
 using Testcontainers.PostgreSql;
 
@@ -12,7 +11,7 @@ namespace WebAPI.IntegrationTests.Core;
 
 public sealed class AlbaHostFixture : IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder()
+    private readonly PostgreSqlContainer _postgresContainer = new PostgreSqlBuilder()
         .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(PostgreSqlBuilder.PostgreSqlPort)) // Currently, it is not necessary, but good practice to apply WaitStrategy
         .WithImage("postgres:latest")
         .WithDatabase("database")
@@ -30,12 +29,15 @@ public sealed class AlbaHostFixture : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        await _postgreSqlContainer.StartAsync();
+        await _postgresContainer.StartAsync();
+
+        // Using EF, you can create an SQL migration script and execute it, instead of applying it through a BackgroundService
+        // await _postgreSqlContainer.ExecScriptAsync(File.ReadAllText(@"....\WebAPI\migration_script.sql"));
 
         AlbaWebHost = await AlbaHost.For<Program>(configureWebHostBuilder);
 
-        // DB migration is applied with a BackgroundService, therefore the Respawner needs to be crated later on.
-        // Otherwise no tables and ResetDatabase throws exception.
+        // DB migration is applied using a BackgroundService, therefore, the Respawner must be created afterward
+        // Otherwise, ResetDatabase will throw an exception due to missing tables
         _lazyRespawner = new Lazy<Task<Respawner>>(createRespawner);
     }
 
@@ -48,7 +50,7 @@ public sealed class AlbaHostFixture : IAsyncLifetime
     {
         var configurationOverridden = new Dictionary<string, string>
         {
-            ["ConnectionStrings:PostgreSQL"] = _postgreSqlContainer.GetConnectionString()
+            ["ConnectionStrings:PostgreSQL"] = _postgresContainer.GetConnectionString()
         };
 
         configurationBuilder.AddInMemoryCollection(configurationOverridden!);
@@ -63,15 +65,15 @@ public sealed class AlbaHostFixture : IAsyncLifetime
 
     private async Task<Respawner> createRespawner()
     {
-        _dbConnection = new NpgsqlConnection(_postgreSqlContainer.GetConnectionString());
+        _dbConnection = new NpgsqlConnection(_postgresContainer.GetConnectionString());
 
         await _dbConnection.OpenAsync();
 
         return await Respawner.CreateAsync(_dbConnection, new RespawnerOptions
         {
-            DbAdapter = DbAdapter.Postgres,
-            SchemasToInclude = new[] { "public" },
-            TablesToIgnore = new Table[] { "__EFMigrationsHistory" }
+            DbAdapter        = DbAdapter.Postgres,
+            SchemasToInclude = ["public"],
+            TablesToIgnore   = ["__EFMigrationsHistory"]
         });
     }
 
@@ -81,6 +83,6 @@ public sealed class AlbaHostFixture : IAsyncLifetime
 
         await _dbConnection.DisposeAsync();
 
-        await _postgreSqlContainer.StopAsync();
+        await _postgresContainer.StopAsync();
     }
 }

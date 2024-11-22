@@ -15,10 +15,8 @@ public sealed class Program
         // Mapster
         TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
 
-        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
-        var configuration = builder.Configuration;
-        var services      = builder.Services;
+        WebApplicationBuilder builder  = WebApplication.CreateBuilder(args);
+        IServiceCollection    services = builder.Services;
 
         // Add services to the container
         {
